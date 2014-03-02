@@ -49,5 +49,5 @@ def create_plist(n=12):
     given, default n to 12.
     """
     #for now, don't worry about arrival time
-    return [ Process(i, ri(500, 4000), 0) for i in range(1,n+1) ]
+    return [ Process(i, ri(500, 4000), ri(0, 1)) for i in range(1,n+1) ]
 
