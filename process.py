@@ -15,10 +15,14 @@ class Process:
         self.time: time **REMAINING**
         self.arrived: time entering ready queue
         self.priority: process priority. lower number = higher priority
+        self.popped: time popped out of q 
+        self.time_q: total time spent waiting in q 
         """
         self.pid = pid
         self.time = burst_time
         self.arrived = arrival_time
+        self.popped = None
+        self.time_q = 0
         self.priority = ri(1, 4)
 
     def __str__(self):
@@ -46,10 +50,13 @@ class Process:
 
     def completes(self, time):
         """print message indicating process has completed"""
+        #this will change somewhat when initial/total wait times are
+        #not the same. Going to keep track of total time in q
 
         print("[time {}ms] Process {} CPU burst done (turnaround time"
               " {}ms, initial wait time {}ms, total wait time"
-              " {}ms".format(time, self.pid, time - self.arrived, 0, 0))
+              " {}ms)".format(time, self.pid, time - self.arrived, 
+                  self.popped - self.arrived, self.time_q))
 
 
 #=============================================================================
@@ -58,14 +65,16 @@ def create_plist(n=12):
     """
     Returns a list of n Process objects, numbered 1-n. Burst times for 
     each process are 500-4000 ms, randomly generated. If no argument is
-    given, default n to 12.
+    given, default n to 12. Arrival times are based on an exponential 
+    distribution.
     """
     times = get_process_times(n, PERCENT_ARRIVING_TIME_ZERO)
-    return [Process(i, ri(500, 4000), j) for i, j in zip( range(1, n+1), times )]
+    return [Process(i, ri(500, 4000), j) for i, j in zip(
+        range(1, n+1), times )]
 
 def get_process_times(n, PERCENT_ARRIVING_TIME_ZERO):
   """
-  return the lengths of n random processes, as a list. A percentage start 
+  Return the lengths of n random processes, as a list. A percentage start 
   at time 0, and the rest are exponentially distributed. 
   Times over 5000ms are ignored.
   """

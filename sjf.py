@@ -24,6 +24,7 @@ def sjf(plist):
         try:
             if (running_process is None):
                 running_process = heapq.heappop(ready_q)
+                running_process.popped = TIME
 
             if (running_process.is_complete()):
                 running_process.completes(TIME)
@@ -33,10 +34,14 @@ def sjf(plist):
             else:
                 running_process.time -= 1
 
+            #handle total wait time for each process
+            for p in ready_q:
+                p.time_q += 1
+
         # if ready_q empty, can't execute any processes
         except IndexError:
             continue
 
 if __name__ == "__main__":
-    plist = p.create_plist(1000)
+    plist = p.create_plist() #takes optional argument for num processes
     sjf(plist)
