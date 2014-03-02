@@ -1,5 +1,9 @@
 from random import randint as ri
 
+# Change this to test different distributions of arrival times
+#=============================================================================
+PERCENT_ARRIVING_TIME_0 = 10 
+#=============================================================================
 
 class Process:
 
@@ -54,3 +58,10 @@ def create_plist(n=12):
     """
     # for now, don't worry about arrival time
     return [Process(i, ri(500, 4000), ri(0, 3)) for i in range(1, n + 1)]
+
+def get_process_times(n, PERCENT_ARRIVING_TIME_0):
+  """
+  return the lengths of n random processes, as a list. 10% start at time 0, 
+  and the rest are exponentially distributed. Times over 5000ms are ignored.
+  """
+  pass

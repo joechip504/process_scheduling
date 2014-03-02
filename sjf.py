@@ -1,22 +1,13 @@
 import process as p
 import heapq
 
-
-def update_plist(time, ready_q):
-    """creates a new plist without processes at 'time'"""
-    return [p for p in ready_q if (p.arrived != time)]
-
-
 def sjf(plist):
     """
     Shortest Job First (sjf). As processes arrive, execute them in
     increasing order of burst time.
     """
-
-    num_processes = len(plist)
+    TIME, completed, num_processes = -1, 0, len(plist)
     ready_q = []
-    completed = 0
-    TIME = -1
     running_process = None
 
     while (completed < num_processes):
