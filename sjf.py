@@ -1,7 +1,6 @@
 import process as p
 import heapq 
 
-from pprint import pprint
 
 def update_plist(time, ready_q):
     """creates a new plist without processes at 'time'""" 
@@ -9,36 +8,44 @@ def update_plist(time, ready_q):
 
 
 def sjf(plist):
+
     """
     Shortest Job First (sjf). As processes arrive, execute them in
     increasing order of burst time.
     """
+
     num_processes = len(plist)
     ready_q = []
     completed = 0
-    TIME = 0
+    TIME = -1 
+    running_process = None 
 
     while (completed < num_processes ):
 
-        #execute the first process in the ready_q, if there is one
+        TIME += 1
+
+        #populate ready_q
+        for p in plist:
+            if (p.arrived == TIME):
+                heapq.heappush(ready_q, p)
+                p.arrives(TIME)
+
+        #execute the first process in the ready_q, if one exists
         try:
-            p = heapq.heappop(ready_q)
-            TIME += p.time
-            p.completes(TIME)
-            completed += 1
+            if (running_process is None):
+                running_process = heapq.heappop(ready_q)
 
-        #else, populate the ready_q
+            if (running_process.is_complete()):
+                running_process.completes(TIME)
+                completed += 1
+                running_process = None
+
+            else:
+                running_process.time -= 1
+
+        #if ready_q empty, can't execute any processes 
         except IndexError:
-            start_time = min( [p.arrived for p in plist] )
-            for p in plist:
-                if (p.arrived == start_time):
-                    heapq.heappush(ready_q, p)
-                    p.arrives(TIME)
-
-            plist = update_plist(start_time, plist)
-
-      
-          
+            continue
 
 if __name__ == "__main__":
     plist = p.create_plist()
