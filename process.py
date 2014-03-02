@@ -27,9 +27,18 @@ class Process:
         return (self.time < other.time)
 
     def arrives(self, time):
+        """print message indicating process has arrived in ready_q"""
+
         print("[time {}ms] Process {} entered ready queue (requires {}ms"
                 " CPU time; priority {})".format(
                     time, self.pid, self.time, self.priority))
+
+    def completes(self, time):
+        """print message indicating process has completed"""
+
+        print("[time {}ms] Process {} CPU burst done (turnaround time"
+                " {}ms, initial wait time {}ms, total wait time"
+                " {}ms".format(time, self.pid, time-self.arrived, 0, 0))
 
 
 
