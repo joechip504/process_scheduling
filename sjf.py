@@ -38,5 +38,5 @@ def sjf(plist):
             continue
 
 if __name__ == "__main__":
-    plist = p.create_plist()
+    plist = p.create_plist(1000)
     sjf(plist)
