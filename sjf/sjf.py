@@ -1,4 +1,4 @@
-import process as p
+import process_sjf as p
 import heapq
 
 def sjf(plist):

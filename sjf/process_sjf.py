@@ -41,8 +41,8 @@ class Process:
         """print message indicating process has arrived in ready_q"""
 
         print("[time {}ms] Process {} entered ready queue (requires {}ms"
-              " CPU time; priority {})".format(
-                  time, self.pid, self.time, self.priority))
+              " CPU time)".format(
+                  time, self.pid, self.time))
 
     def is_complete(self):
         """return true if process has no time remaining"""
