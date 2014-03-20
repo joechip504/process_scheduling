@@ -1,3 +1,6 @@
+# ============================================================================
+# Joe Pringle (661114638), CSCI-4210 OpSys, roundrobin_priority_aging.py
+# ============================================================================
 import process_priority as pr
 from completed_plist import CompletedPlist
 
@@ -7,15 +10,17 @@ TIME_SLICE = 100
 # Time for context switch, TCS. Instructions said to include this, but
 # this should not be modified, since 7ms removing old process and 10ms
 # selecting and resuming new process was not specified to be adjustable.
-TCS = 17 
+TCS = 17
+
 
 def ages(running_process, TIME):
     """
     Returns True if a process has waited in the ready_q for 
     1000ms. Called every time TIME is incremented, for correctness.
     """
-    return ( running_process.time_q > 1000 and 
-            running_process.time_q % 1000 == 0 )
+    return (running_process.time_q > 1000 and
+            running_process.time_q % 1000 == 0)
+
 
 def preempts(running_process, ready_q):
     """
@@ -29,7 +34,8 @@ def preempts(running_process, ready_q):
     except:
         return False
 
-def roundrobin_priority(plist):
+
+def roundrobin_priority_aging(plist):
     """
     Shortest Job First (sjf). As processes arrive, execute them in
     increasing order of burst time.
@@ -46,16 +52,16 @@ def roundrobin_priority(plist):
         TIME += 1
         TIMERR_REMAINING -= 1
 
-        # Due to aging, using a heap to maintain order isn't as 
+        # Due to aging, using a heap to maintain order isn't as
         # effective. We'll just sort by priority each iteration.
 
         for p in ready_q:
-            if( ages(p, TIME) ):
+            if(ages(p, TIME)):
                 p.ages(TIME)
 
         ready_q.sort()
 
-        #handle total wait time for each process
+        # handle total wait time for each process
         for p in ready_q:
             p.time_q += 1
 
@@ -66,13 +72,12 @@ def roundrobin_priority(plist):
                 ready_q.sort()
                 p.arrives(TIME)
 
-
         # execute the first process in the ready_q, if one exists
         try:
             if (running_process is None):
                 TIMERR_REMAINING = TIME_SLICE
 
-                running_process = ready_q.pop(0) 
+                running_process = ready_q.pop(0)
                 if (running_process.popped is None):
                     running_process.popped = TIME
 
@@ -83,7 +88,7 @@ def roundrobin_priority(plist):
 
         # if ready_q empty, can't execute any processes
         except IndexError:
-            if (TIMECS_REMAINING == 0 ):
+            if (TIMECS_REMAINING == 0):
                 prev_process = None
             continue
 
@@ -92,7 +97,7 @@ def roundrobin_priority(plist):
             TIMECS_REMAINING -= 1
             continue
 
-        # if the time slice is complete, indicate a context switch, put 
+        # if the time slice is complete, indicate a context switch, put
         # the current process at the end of the ready_q, and grab another
         # process out of the ready_q
         if (TIMERR_REMAINING == 0):
@@ -107,19 +112,19 @@ def roundrobin_priority(plist):
                 running_process.popped = TIME
 
             TIMERR_REMAINING = TIME_SLICE
-            TIMECS_REMAINING += TCS 
+            TIMECS_REMAINING += TCS
 
         # If a preemption occurs, print a message indicating a context switch.
         # Then, switch the current process with the one on top of the heap
         ready_q.sort()
 
-        if preempts( running_process, ready_q ):
+        if preempts(running_process, ready_q):
             prev_process = running_process
             pr.switches(running_process, ready_q[0], TIME)
 
             ready_q.append(running_process)
             ready_q.sort()
-            running_process = ready_q.pop(0) 
+            running_process = ready_q.pop(0)
 
             if (running_process.popped is None):
                 running_process.popped = TIME
@@ -135,9 +140,9 @@ def roundrobin_priority(plist):
             # begin immediately as a process completes
             TIME -= 1
 
-            #7 ms in context switch to clear old process
+            # 7 ms in context switch to clear old process
             prev_process = running_process
-            TIMECS_REMAINING += 7 
+            TIMECS_REMAINING += 7
             running_process = None
 
         else:
@@ -146,8 +151,7 @@ def roundrobin_priority(plist):
     return p_completed
 
 if __name__ == "__main__":
-    plist = pr.create_plist() #takes optional argument for num processes
-    plist_completed = roundrobin_priority(plist)
+    plist = pr.create_plist()  # takes optional argument for num processes
+    plist_completed = roundrobin_priority_aging(plist)
     print()
     plist_completed.statistics()
-

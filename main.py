@@ -1,4 +1,26 @@
-def simulation(n = 12):
+# ============================================================================
+# Joe Pringle (661114638), CSCI-4210 OpSys, main.py
+
+#      *** RUNNING INSTRUCTIONS ***
+#
+#           python3 main.py
+#
+#      ****************************
+
+# ============================================================================
+import process as pr
+import process_priority as prp
+from copy import deepcopy
+from completed_plist import CompletedPlist
+from sjf import sjf
+from sjf_preemption import sjf_preemption
+from roundrobin import roundrobin
+from roundrobin_priority import roundrobin_priority
+from roundrobin_priority_aging import roundrobin_priority_aging
+# ============================================================================
+
+
+def simulation(n=12):
     """
     n is an optional argument specifying the number of processes in the
     simulation. n defaults to 12.
@@ -26,9 +48,30 @@ def simulation(n = 12):
     was for selecting the next process. There was no provided information 
     on how to scale these values for different values of TCS. 
 
+    To change the 10/90 arrival time distribution, look at the top of 
+    process_priority.py. At the top, there is a global variable called 
+    PERCENT_ARRIVING_TIME_ZERO, defaulted to 10.
+
     """
-    print(n)
-    pass
+    plist = prp.create_plist()
+    simulations = [sjf, sjf_preemption, roundrobin,
+                   roundrobin_priority, roundrobin_priority_aging]
+    #simulations_priority = [roundrobin_priority, roundrobin_priority_aging]
+
+    for sim in simulations:
+        # for clarity, print the name of the simulation
+        print("RUNNING {}".format(sim.__name__), end='\n\n')
+
+        # python passes all lists by reference, so copy plist to not
+        cpy = deepcopy(plist)
+
+        # run the simulation
+        plist_completed = sim(cpy)
+
+        # print statistics after scheduling completes
+        print(end='\n')
+        plist_completed.statistics()
+        print(end='\n')
 
 
 if __name__ == "__main__":
