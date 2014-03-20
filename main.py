@@ -16,7 +16,7 @@ from sjf import sjf
 from sjf_preemption import sjf_preemption
 from roundrobin import roundrobin
 from roundrobin_priority import roundrobin_priority
-from roundrobin_priority_aging import roundrobin_priority_aging
+from fcfs_aging import fcfs_aging
 # ============================================================================
 
 
@@ -55,8 +55,7 @@ def simulation(n=12):
     """
     plist = prp.create_plist()
     simulations = [sjf, sjf_preemption, roundrobin,
-                   roundrobin_priority, roundrobin_priority_aging]
-    #simulations_priority = [roundrobin_priority, roundrobin_priority_aging]
+                   roundrobin_priority, fcfs_aging]
 
     for sim in simulations:
         # for clarity, print the name of the simulation
